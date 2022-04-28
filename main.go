@@ -16,21 +16,19 @@ func main() {
 		panic("Database connection failed")
 	}
 
+	CreateDB(db)
+
 	hostname, err := os.Hostname()
 
-	var msg string
-
 	if err != nil {
-		msg = "Could not get hostname"
-	} else {
-		msg = hostname
+		panic(err)
 	}
 
 	r := gin.Default()
 	r.GET("", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"hostname": msg,
-		})
+		IncrementHostname(db, hostname)
+
+		c.JSON(200, ListHostnames(db))
 	})
 	r.Run()
 	//ginConfig := LoadGinConfiguration()

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/davecgh/go-spew/spew"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/lib/pq"
 	pg "gorm.io/driver/postgres"
@@ -21,4 +22,34 @@ func StartGormDatabase(config GormConfig) *gorm.DB {
 		panic(err)
 	}
 	return db
+}
+
+type HostnameCount struct {
+	gorm.Model
+
+	Hostname string `gorm:"primary_key"`
+	Count    int    `gorm:"default:0"`
+}
+
+func CreateDB(db *gorm.DB) {
+	db.AutoMigrate(&HostnameCount{})
+}
+
+func IncrementHostname(db *gorm.DB, hostname string) {
+	hostnameExists := HostnameCount{}
+	err := db.Where("hostname = ?", hostname).First(&hostnameExists)
+
+	if err.Error != nil {
+		spew.Dump(err.Error.Error())
+		db.Create(&HostnameCount{Hostname: hostname, Count: 1})
+	} else {
+		db.Model(&hostnameExists).Update("count", hostnameExists.Count+1)
+	}
+}
+
+func ListHostnames(db *gorm.DB) []HostnameCount {
+	var hostnames []HostnameCount
+	db.Find(&hostnames)
+
+	return hostnames
 }

@@ -3,6 +3,7 @@ module kube-multinode-postgres-tester
 go 1.18
 
 require (
+	github.com/davecgh/go-spew v1.1.1
 	github.com/gin-gonic/gin v1.7.7
 	github.com/golang-migrate/migrate/v4 v4.15.2
 	github.com/joho/godotenv v1.4.0
