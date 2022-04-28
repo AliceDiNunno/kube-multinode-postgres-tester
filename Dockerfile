@@ -10,7 +10,7 @@ RUN env ${opts} go mod download
 
 COPY . .
 
-RUN env ${opts} go build ./*.go
+RUN env ${opts} go build -o main ./*.go
 
 WORKDIR /app
 ENTRYPOINT ["./main"]
