@@ -1,11 +1,19 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"os"
+	"strings"
 )
 
 func main() {
+	println("ENV")
+	for _, e := range os.Environ() {
+		pair := strings.SplitN(e, "=", 2)
+		fmt.Println(pair[0], "=", pair[1])
+	}
+
 	LoadEnv()
 
 	gormConfig := LoadGormConfiguration()
@@ -36,7 +44,7 @@ func main() {
 			"status": "ok",
 		})
 	})
-	
+
 	r.Run()
 	//ginConfig := LoadGinConfiguration()
 }
